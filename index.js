@@ -31,6 +31,23 @@ const client = new Client({
 client.commands = new Collection();
 client.config = config;
 
+let isShuttingDown = false;
+async function shutdown(signal) {
+  if (isShuttingDown) return;
+  isShuttingDown = true;
+  // eslint-disable-next-line no-console
+  console.log(`🛑 Encerrando (${signal})...`);
+  try {
+    await client.destroy();
+  } catch {
+    // ignore
+  }
+  process.exit(0);
+}
+
+process.once("SIGINT", () => void shutdown("SIGINT"));
+process.once("SIGTERM", () => void shutdown("SIGTERM"));
+
 function loadCommands() {
   const commandsDir = path.join(__dirname, "commands");
   if (!fs.existsSync(commandsDir)) return [];
