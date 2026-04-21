@@ -11,7 +11,9 @@ const {
   Routes
 } = require("discord.js");
 
-const { loadConfig } = require("./config");
+// Import explícito: em alguns hosts existe `config.json` na raiz e o Node pode
+// resolver `require("./config")` para JSON (sem `loadConfig`). Isso quebra o deploy.
+const { loadConfig } = require("./config/index.js");
 
 const TOKEN = process.env.DISCORD_TOKEN;
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
